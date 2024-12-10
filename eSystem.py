@@ -4,141 +4,359 @@ from tkinter import messagebox
 # Define the knowledge base
 knowledge_base = {
     "facts": {
-        "feeling_sad": False,
-        "lack_of_interest": False,
-        "trouble_sleeping": False,
-        "feeling_nervous": False,
-        "excessive_worrying": False,
-        "trouble_concentrating": False,
-        "feeling_overwhelmed": False,
-        "uncontrollable_worry": False,
-        "restlessness": False,
-        "muscle_tension": False,
+            #Depression
+        "sad": False,
+        "low": False,
+        "hopeless": False,
+        "helpless": False,
+        "tearful": False,
+        "lack of interest": False,
+        "anxious": False,
+        "fatigue": False,
+        "difficulties in life": False,
+        "trouble sleeping": False,
+
+            #General anxiety
+        "anxious": False,
+        "feeling nervous": False,
+        "worrying": False,
+        "irritated": False,
+        #trouble sleeping
+        #fatigue
+        "trouble concentrating": False,
+        "feeling overwhelmed": False,
+        "uncontrollable worry": False,
+
+            #PTSD
         "flashbacks": False,
         "nightmares": False,
+        #irritated
+        "guilty": False,
+        #trouble concentrating
+        #trouble sleeping
+
+            #OCD
         "obsessions": False,
-        "compulsions": False,
-        "racing_heartbeat": False,
+        "fear harming others": False,
+        "fear accidental harm": False,
+        "fear contamination": False,
+        "need symmetry order": False,
+        "disturbing thoughts": False,
+        #anxious
+        "compulsive cleaning": False,
+        "compulsive checking": False,
+        "compulsive counting": False,
+        "arranging items": False,
+        "seeking reassurance": False,
+        "repetitive actions": False,
+        "avoidance behavior": False,
+        
+            #Panic disorder
+        #anxious
+        #worrying
+        "panicing": False,
+        "panic attack": False,
         "sweating": False,
-        "chest_pain": False,
+        "racing heartbeat": False,
+        "chills": False,
+        "nausea": False,
+        "shaky limbs": False,
+        "dizziness": False,
+        "shortness of breath": False,
+        "pins and needles": False,
+        "lasts up to 20 minutes": False,
+        
+            #Schizophrenia
         "hallucinations": False,
         "delusions": False,
-        "impulsivity": False,
-        "idealization_devaluation": False,
+        "paranoia": False,
+        "hearing voices": False,
+        "seeing things": False,
+        "smelling things": False,
+        #trouble concentrating
+        "feeling controlled": False,
+        "avoiding people": False,
+        "lack of self care": False,
+        
+            #Bipolar disorder
+        "mood_swings": False,
+        "sudden mood change": False,
+        #sad
+        #low
+        #trouble concentrating
+        #lack of interest
+        "increased energy": False,
+        "easily annoyed": False,
+        "excessive spending": False,
+        "decreased need for sleep or food": False,
+        #delusions
+        #hallucinations
+        #irritated
+
+            #Eating disorder
+        "body dysmorphia": False,
+        "worrying about body": False,
+        "worrying about weight": False,
+        #avoiding people
+        "eating less": False,
+        "restricting food": False,
+        #anxious
+        "exercising excessively": False,
+        #dizziness
+        "numbness in arms and legs": False,
+        "digestive issue, diarhhea": False,
+        "higher weight": False,
+        "lower weight": False,
+        "delayed period": False,
+
+            #ADHD
+        #mood swings
+        "carelessness": False,
+        "difficulty finishing tasks": False,
+        "poor organizational skills": False,
+        "difficulty focusing": False,
+        "losing items": False,
+        "forgetfulness": False,
+        "restlessness": False,
+        "difficulty staying quiet": False,
+        "speaking out of turn": False,
+        "interrupting others": False,
+        "quick temper": False,
+        "inability to handle stress": False,
+        "impatience": False,
+        "taking risks": False,
+            #Paranoia
+        #delusions
+        #hallucinations
+        #feeling controlled
+        #perceived threats
+        "easily offended": False,
+        "defensive": False,
+        "aggresion": False,
+        "inability to compromise": False,
+        "struggling with criticism": False,
+
+            #Psychosis
+        #hallicinations
+        #seeing things
+        "feeling false touches": False,
+        #hearing voices
+        #delusions
+        "rapid or constant speech": False,
+        "switching topics mid sentence": False,
+        "perscecutory delusions": False,
+        "grandiose delusions": False,
+
+            #Borderline personality disorder
+        "emotional instability": False,
+        "intense negative emotions": False,
+        "rage": False,
+        "sorrow": False,
+        #mood swings
+        "cognitive distortions": False,
+        "perceptual distortions": False,
+        "impulsive actions": False,
+        "reckless behavior": False,
+        "fear of abandonment": False,
+        "idealization devaluation": False
+
     },
     "rules": [
-        {"if": {"feeling_sad": True, "lack_of_interest": True, "trouble_sleeping": True}, "then": "depression", "explanation": "Feeling sad, lack of interest, and trouble sleeping are common symptoms of depression."},
-        {"if": {"uncontrollable_worry": True, "restlessness": True, "muscle_tension": True}, "then": "general_anxiety_disorder", "explanation": "Uncontrollable worry, restlessness, and muscle tension are key indicators of General Anxiety Disorder."},
-        {"if": {"flashbacks": True, "nightmares": True}, "then": "post_traumatic_stress_disorder", "explanation": "Flashbacks and nightmares are significant symptoms of PTSD."},
-        {"if": {"obsessions": True, "compulsions": True}, "then": "obsessive_compulsive_disorder", "explanation": "Obsessions and compulsions are characteristic of Obsessive-Compulsive Disorder."},
-        {"if": {"racing_heartbeat": True, "sweating": True, "chest_pain": True}, "then": "panic_disorder", "explanation": "Racing heartbeat, sweating, and chest pain can point to Panic Disorder."},
-        {"if": {"hallucinations": True, "delusions": True}, "then": "schizophrenia", "explanation": "Hallucinations and delusions are common symptoms of Schizophrenia."},
-        {"if": {"feeling_sad": True, "lack_of_interest": True, "trouble_sleeping": True}, "then": "bipolar_depression", "explanation": "Depression with these symptoms could also indicate Bipolar Depression."},
-        {"if": {"elevated_mood": True, "increased_activity": True, "impulsivity": True}, "then": "bipolar_mania", "explanation": "Elevated mood, increased activity, and impulsivity are indicators of Bipolar Mania."},
-        {"if": {"intense_emotions": True, "impulsivity": True, "idealization_devaluation": True}, "then": "borderline_personality_disorder", "explanation": "Intense emotions and impulsivity with idealization/devaluation are typical of Borderline Personality Disorder."},
+        {
+            "if": {
+                "sad": True,
+                "low": True,
+                "hopeless": True,
+                "helpless": True,
+                "tearful": True,
+                "lack of interest": True,
+                "anxious": True,
+                "fatigue": True,
+                "difficulties in life": True,
+                "trouble sleeping": True,
+            },
+            "then": "depression"
+        },
+        {
+            "if": {
+                "anxious": True,
+                "feeling_nervous": True,
+                "worrying": True,
+                "irritated": True,
+                "trouble concentrating": True,
+                "feeling overwhelmed": True,
+                "uncontrollable worry": True,
+                "trouble sleeping": True,
+                "fatigue": True
+            },
+            "then": "general anxiety"
+        },
+        {
+            "if": {
+                "flashbacks": True,
+                "nightmares": True,
+                "irritated": True,
+                "guilty": True,
+                "trouble concentrating": True,
+                "trouble sleeping": True
+            },
+            "then": "ptsd"
+        },
+        # Rule for OCD
+        {
+            "if": {
+                "obsessions": True,
+                "fear harming_others": True,
+                "fear accidental_harm": True,
+                "fear contamination": True,
+                "need symmetry_order": True,
+                "disturbing thoughts": True,
+                "compulsive cleaning": True,
+                "compulsive checking": True,
+                "compulsive counting": True,
+                "arranging items": True,
+                "seeking reassurance": True,
+                "repetitive actions": True,
+                "avoidance behavior": True,
+                "anxious": True
+            },
+            "then": "ocd"
+        },
+        {
+            "if": {
+                "anxious": True,
+                "worrying": True,
+                "panicing": True,
+                "panic attack": True,
+                "sweating": True,
+                "racing heartbeat": True,
+                "chills": True,
+                "nausea": True,
+                "shaky_limbs": True,
+                "dizziness": True,
+                "shortness of breath": True,
+                "pins and needles": True,
+                "lasts up to 20 minutes": True
+            },
+            "then": "panic disorder"
+        },
+            # Rule for Schizophrenia
+        {
+            "if": {
+                "hallucinations": True,
+                "delusions": True,
+                "paranoia": True,
+                "hearing voices": True,
+                "seeing things": True,
+                "smelling things": True,
+                "trouble concentrating": True,
+                "feeling controlled": True,
+                "avoiding people": True,
+                "lack of self care": True
+            },
+            "then": "schizophrenia"
+        },
+        {
+            "if": {
+                "mood swings": True,
+                "sudden mood change": True,
+                "sad": True,
+                "low": True,
+                "trouble concentrating": True,
+                "lack of interest": True,
+                "increased energy": True,
+                "easily annoyed": True,
+                "excessive spending": True,
+                "decreased need for sleep or food": True,
+                "delusions": True,
+                "hallucinations": True,
+                "irritated": True
+            },
+            "then": "bipolar disorder"
+        },
+        {
+            "if": {
+                "body dysmorphia": True,
+                "worrying about body": True,
+                "worrying about weight": True,
+                "avoiding people": True,
+                "eating less": True,
+                "restricting food": True,
+                "anxious": True,
+                "exercising excessively": True,
+                "dizziness": True,
+                "numbness in arms and legs": True,
+                "digestive issue diarhhea": True,
+                "higher weight": True,
+                "lower weight": True,
+                "delayed period": True
+            },
+            "then": "eating disorder"
+        },
+        {
+            "if": {
+                "mood swings": True,
+                "carelessness": True,
+                "difficulty finishing tasks": True,
+                "poor_organizational skills": True,
+                "difficulty focusing": True,
+                "losing_items": True,
+                "forgetfulness": True,
+                "restlessness": True,
+                "difficulty staying quiet": True,
+                "speaking out of turn": True,
+                "interrupting others": True,
+                "quick temper": True,
+                "inability to handle stress": True,
+                "impatience": True,
+                "taking risks": True
+            },
+            "then": "adhd"
+        },
+        {
+            "if": {
+                "emotional_instability": True,
+                "intense_negative_emotions": True,
+                "rage": True,
+                "sorrow": True,
+                "mood_swings": True,
+                "cognitive_distortions": True,
+                "perceptual_distortions": True,
+                "impulsive_actions": True,
+                "reckless_behavior": True,
+                "fear_of_abandonment": True,
+                "idealization_devaluation": True
+            },
+            "then": "borderline_personality_disorder"
+        },
+        {
+            "if": {
+                "delusions": True,
+                "hallucinations": True,
+                "feeling_controlled": True,
+                "perceived_threats": True,
+                "easily_offended": True,
+                "defensive": True,
+                "aggresion": True,
+                "inability_to_compromise": True,
+                "struggling_with_criticism": True
+            },
+            "then": "paranoia"
+        },
+        {
+            "if": {
+                "hallucinations": True,
+                "seeing_things": True,
+                "feeling_false_touches": True,
+                "hearing_voices": True,
+                "delusions": True,
+                "rapid_or_constant_speech": True,
+                "switching_topics_mid_sentence": True,
+                "perscecutory_delusions": True,
+                "grandiose_delusions": True
+            },
+            "then": "psychosis"
+        }
     ]
 }
 
-# Inference engine with Forward Chaining and explanation
-def inference_engine(knowledge_base):
-    facts = knowledge_base["facts"]
-    rules = knowledge_base["rules"]
-    conclusions = []
-    explanation = []
-
-    # Forward Chaining: Apply all rules and check facts
-    for rule in rules:
-        if all(facts.get(condition, False) == value for condition, value in rule["if"].items()):
-            conclusions.append(rule["then"])
-            explanation.append(rule["explanation"])
-
-    return conclusions, explanation
-
-# Expert System Application class with chaining option
-class ExpertSystemApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Mental Health Diagnosis Expert System")
-        
-        # Define the questions and corresponding knowledge base keys
-        self.questions = [
-            ("Do you often feel sad or down?", "feeling_sad"),
-            ("Do you lose interest in things you used to enjoy?", "lack_of_interest"),
-            ("Do you have trouble sleeping or sleep too much?", "trouble_sleeping"),
-            ("Do you feel nervous or on edge?", "feeling_nervous"),
-            ("Do you worry excessively about different things?", "excessive_worrying"),
-            ("Do you find it hard to concentrate?", "trouble_concentrating"),
-            ("Do you feel overwhelmed by daily tasks?", "feeling_overwhelmed"),
-            ("Do you experience uncontrollable worrying?", "uncontrollable_worry"),
-            ("Do you feel restless or on edge?", "restlessness"),
-            ("Do you have muscle tension?", "muscle_tension"),
-            ("Do you experience flashbacks or nightmares?", "flashbacks"),
-            ("Do you experience unwanted thoughts or compulsive actions?", "obsessions"),
-            ("Do you have a racing heartbeat, sweating, or chest pain?", "racing_heartbeat"),
-            ("Do you experience hallucinations or delusions?", "hallucinations"),
-            ("Do you have impulsive behaviors or thoughts?", "impulsivity"),
-            ("Do you experience mood swings, especially in relationships?", "idealization_devaluation"),
-        ]
-        self.current_question_index = 0
-        self.answers = {}
-
-        # Create UI elements
-        self.question_label = tk.Label(self.root, text="", font=("Arial", 14), width=80, height=2)
-        self.question_label.pack(pady=20)
-        
-        self.answer_var = tk.IntVar(value=0)
-        self.yes_button = tk.Radiobutton(self.root, text="Yes", variable=self.answer_var, value=1, font=("Arial", 12))
-        self.no_button = tk.Radiobutton(self.root, text="No", variable=self.answer_var, value=0, font=("Arial", 12))
-        self.yes_button.pack()
-        self.no_button.pack()
-
-        self.next_button = tk.Button(self.root, text="Next", command=self.next_question, font=("Arial", 12))
-        self.next_button.pack(pady=10)
-        
-        self.reset_button = tk.Button(self.root, text="Reset", command=self.reset, font=("Arial", 12))
-        self.reset_button.pack(pady=10)
-
-        # Display the first question
-        self.display_question()
-
-    def display_question(self):
-        question, _ = self.questions[self.current_question_index]
-        self.question_label.config(text=question)
-
-    def next_question(self):
-        # Save the current answer to the facts in the knowledge base
-        _, key = self.questions[self.current_question_index]
-        knowledge_base["facts"][key] = bool(self.answer_var.get())
-        
-        # Move to the next question
-        self.current_question_index += 1
-        if self.current_question_index < len(self.questions):
-            self.display_question()
-        else:
-            # End of questions; perform inference
-            self.show_results()
-
-    def show_results(self):
-        # Perform forward chaining and get diagnosis and explanation
-        conclusions, explanation = inference_engine(knowledge_base)
-
-        if conclusions:
-            result_text = "Possible mental health conditions:\n" + "\n".join(f"- {c}" for c in conclusions)
-            result_text += "\n\nExplanation for the diagnosis:\n" + "\n".join(f"{ex}" for ex in explanation)
-            messagebox.showinfo("Diagnosis", result_text)
-        else:
-            messagebox.showinfo("Diagnosis", "No mental health condition could be diagnosed based on the current symptoms.")
-        self.root.quit()
-
-    def reset(self):
-        # Reset the application state for a new diagnosis session
-        knowledge_base["facts"] = {key: False for key in knowledge_base["facts"]}
-        self.current_question_index = 0
-        self.answer_var.set(0)
-        self.display_question()
-
-# Run the application
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = ExpertSystemApp(root)
-    root.mainloop()
