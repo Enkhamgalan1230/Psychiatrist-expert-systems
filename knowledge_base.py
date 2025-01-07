@@ -1,10 +1,7 @@
-import tkinter as tk
-from tkinter import messagebox
+# knowledge base.py
 
-# Define the knowledge base
 knowledge_base = {
     "facts": {
-            #Depression
         "sad": False,
         "low": False,
         "hopeless": False,
@@ -15,34 +12,21 @@ knowledge_base = {
         "fatigue": False,
         "difficulties in life": False,
         "trouble sleeping": False,
-
-            #General anxiety
-        "anxious": False,
         "feeling nervous": False,
         "worrying": False,
         "irritated": False,
-        #trouble sleeping
-        #fatigue
         "trouble concentrating": False,
         "feeling overwhelmed": False,
         "uncontrollable worry": False,
-
-            #PTSD
         "flashbacks": False,
         "nightmares": False,
-        #irritated
         "guilty": False,
-        #trouble concentrating
-        #trouble sleeping
-
-            #OCD
         "obsessions": False,
         "fear harming others": False,
         "fear accidental harm": False,
         "fear contamination": False,
         "need symmetry order": False,
         "disturbing thoughts": False,
-        #anxious
         "compulsive cleaning": False,
         "compulsive checking": False,
         "compulsive counting": False,
@@ -50,10 +34,6 @@ knowledge_base = {
         "seeking reassurance": False,
         "repetitive actions": False,
         "avoidance behavior": False,
-        
-            #Panic disorder
-        #anxious
-        #worrying
         "panicing": False,
         "panic attack": False,
         "sweating": False,
@@ -65,52 +45,33 @@ knowledge_base = {
         "shortness of breath": False,
         "pins and needles": False,
         "lasts up to 20 minutes": False,
-        
-            #Schizophrenia
         "hallucinations": False,
         "delusions": False,
         "paranoia": False,
         "hearing voices": False,
         "seeing things": False,
         "smelling things": False,
-        #trouble concentrating
         "feeling controlled": False,
         "avoiding people": False,
         "lack of self care": False,
-        
-            #Bipolar disorder
-        "mood_swings": False,
+        "mood swings": False,
         "sudden mood change": False,
-        #sad
-        #low
-        #trouble concentrating
-        #lack of interest
         "increased energy": False,
         "easily annoyed": False,
         "excessive spending": False,
         "decreased need for sleep or food": False,
-        #delusions
-        #hallucinations
-        #irritated
-
-            #Eating disorder
         "body dysmorphia": False,
         "worrying about body": False,
         "worrying about weight": False,
-        #avoiding people
         "eating less": False,
         "restricting food": False,
-        #anxious
         "exercising excessively": False,
-        #dizziness
         "numbness in arms and legs": False,
-        "digestive issue, diarhhea": False,
+        "digestive issue diarhhea": False,
+        "diarhhea": False,
         "higher weight": False,
         "lower weight": False,
         "delayed period": False,
-
-            #ADHD
-        #mood swings
         "carelessness": False,
         "difficulty finishing tasks": False,
         "poor organizational skills": False,
@@ -125,41 +86,28 @@ knowledge_base = {
         "inability to handle stress": False,
         "impatience": False,
         "taking risks": False,
-            #Paranoia
-        #delusions
-        #hallucinations
-        #feeling controlled
-        #perceived threats
         "easily offended": False,
         "defensive": False,
-        "aggresion": False,
+        "aggression": False,
         "inability to compromise": False,
         "struggling with criticism": False,
-
-            #Psychosis
-        #hallicinations
-        #seeing things
         "feeling false touches": False,
-        #hearing voices
-        #delusions
-        "rapid or constant speech": False,
+        "rapid or constantspeech": False,
         "switching topics mid sentence": False,
-        "perscecutory delusions": False,
+        "persecutory delusions": False,
         "grandiose delusions": False,
-
-            #Borderline personality disorder
         "emotional instability": False,
         "intense negative emotions": False,
         "rage": False,
         "sorrow": False,
-        #mood swings
         "cognitive distortions": False,
         "perceptual distortions": False,
         "impulsive actions": False,
         "reckless behavior": False,
         "fear of abandonment": False,
-        "idealization devaluation": False
-
+        "idealization devaluation": False,
+        "perceived threats": False,
+        "delusion": False
     },
     "rules": [
         {
@@ -173,14 +121,14 @@ knowledge_base = {
                 "anxious": True,
                 "fatigue": True,
                 "difficulties in life": True,
-                "trouble sleeping": True,
+                "trouble sleeping": True
             },
             "then": "depression"
         },
         {
             "if": {
                 "anxious": True,
-                "feeling_nervous": True,
+                "feeling nervous": True,
                 "worrying": True,
                 "irritated": True,
                 "trouble concentrating": True,
@@ -202,14 +150,13 @@ knowledge_base = {
             },
             "then": "ptsd"
         },
-        # Rule for OCD
         {
             "if": {
                 "obsessions": True,
-                "fear harming_others": True,
-                "fear accidental_harm": True,
+                "fear harming others": True,
+                "fear accidental harm": True,
                 "fear contamination": True,
-                "need symmetry_order": True,
+                "need symmetry order": True,
                 "disturbing thoughts": True,
                 "compulsive cleaning": True,
                 "compulsive checking": True,
@@ -232,7 +179,7 @@ knowledge_base = {
                 "racing heartbeat": True,
                 "chills": True,
                 "nausea": True,
-                "shaky_limbs": True,
+                "shaky limbs": True,
                 "dizziness": True,
                 "shortness of breath": True,
                 "pins and needles": True,
@@ -240,11 +187,11 @@ knowledge_base = {
             },
             "then": "panic disorder"
         },
-            # Rule for Schizophrenia
         {
             "if": {
                 "hallucinations": True,
                 "delusions": True,
+                "delusion": True,
                 "paranoia": True,
                 "hearing voices": True,
                 "seeing things": True,
@@ -287,6 +234,7 @@ knowledge_base = {
                 "dizziness": True,
                 "numbness in arms and legs": True,
                 "digestive issue diarhhea": True,
+                "diarhhea": True,
                 "higher weight": True,
                 "lower weight": True,
                 "delayed period": True
@@ -298,9 +246,9 @@ knowledge_base = {
                 "mood swings": True,
                 "carelessness": True,
                 "difficulty finishing tasks": True,
-                "poor_organizational skills": True,
+                "poor organizational skills": True,
                 "difficulty focusing": True,
-                "losing_items": True,
+                "losing items": True,
                 "forgetfulness": True,
                 "restlessness": True,
                 "difficulty staying quiet": True,
@@ -315,45 +263,46 @@ knowledge_base = {
         },
         {
             "if": {
-                "emotional_instability": True,
-                "intense_negative_emotions": True,
+                "emotional instability": True,
+                "intense negative emotions": True,
                 "rage": True,
                 "sorrow": True,
-                "mood_swings": True,
-                "cognitive_distortions": True,
-                "perceptual_distortions": True,
-                "impulsive_actions": True,
-                "reckless_behavior": True,
-                "fear_of_abandonment": True,
-                "idealization_devaluation": True
+                "mood swings": True,
+                "cognitive distortions": True,
+                "perceptual distortions": True,
+                "impulsive actions": True,
+                "reckless behavior": True,
+                "fear of abandonment": True,
+                "idealization devaluation": True
             },
-            "then": "borderline_personality_disorder"
+            "then": "borderline personality disorder"
         },
         {
             "if": {
+                "emotional instability": True,
                 "delusions": True,
                 "hallucinations": True,
-                "feeling_controlled": True,
-                "perceived_threats": True,
-                "easily_offended": True,
+                "feeling controlled": True,
+                "perceived threats": True,
+                "easily offended": True,
                 "defensive": True,
-                "aggresion": True,
-                "inability_to_compromise": True,
-                "struggling_with_criticism": True
+                "aggression": True,
+                "inability to compromise": True,
+                "struggling with criticism": True
             },
             "then": "paranoia"
         },
         {
             "if": {
                 "hallucinations": True,
-                "seeing_things": True,
-                "feeling_false_touches": True,
-                "hearing_voices": True,
+                "seeing things": True,
+                "feeling false touches": True,
+                "hearing voices": True,
                 "delusions": True,
-                "rapid_or_constant_speech": True,
-                "switching_topics_mid_sentence": True,
-                "perscecutory_delusions": True,
-                "grandiose_delusions": True
+                "rapid or constant speech": True,
+                "switching topics mid sentence": True,
+                "persecutory delusions": True,
+                "grandiose delusions": True
             },
             "then": "psychosis"
         }
