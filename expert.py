@@ -1,7 +1,9 @@
 import spacy
 from knowledge_base import knowledge_base
 
+# tokenize user input and extract keywords.
 nlp = spacy.load("en_core_web_sm")
+
 asked_symptoms = set()
 
 
@@ -11,11 +13,11 @@ asked_symptoms = set()
 
 def find_relevant_disorders(kb, matched_facts):
     """
-    The find_relevant_disorders function scans all rules in the knowledge base and checks whether any of the user’s 
-    initially matched facts (symptoms) appear as required (set to True) in a rule’s “if” conditions. 
-    If it finds at least one matching fact in a rule, it adds that rule’s “then” diagnosis to a set of relevant disorders. 
-    In this way, the method narrows the focus to only those disorders that explicitly require the symptoms the user has already mentioned, 
-    rather than considering every possible disorder at once.
+    Purpose: Narrows down relevant disorders based on initial user-provided symptoms.
+    Logic:
+    Loops through rules in the knowledge base (kb).
+    For each rule, checks if any matched symptom is listed as True in the "if" conditions.
+    If a match is found, adds the corresponding disorder to the relevant list.
     """
     relevant = set()
     for rule in kb["rules"]:
@@ -29,11 +31,11 @@ def find_relevant_disorders(kb, matched_facts):
 
 def extract_keywords(user_input, fact_keys):
     '''
-    The user’s input is first converted to lowercase, then tokenized by spaCy into individual tokens. 
-    Each token is checked against the list of known fact keys in two ways—first by its exact text (e.g., “sad”), 
-    and if not found, by its lemma (e.g., the base form “feel” for “feeling”). 
-    Any matches are stored in a set to avoid duplicates, and the function finally returns those matched symptoms as a list. 
-    This ensures that variations in word forms (like “feels” vs. “feel”) can still be recognized, provided the lemma matches a known key in your knowledge base.
+    Purpose: Extracts symptoms (keywords) from user input.
+    Logic:
+    Converts the input to lowercase and tokenizes it using spaCy.
+    Checks each token's text and lemma against known fact keys from the knowledge base.
+    Collects matching keywords in a set to avoid duplicates.
     '''
     text = user_input.lower()
     doc = nlp(text)
@@ -47,10 +49,10 @@ def extract_keywords(user_input, fact_keys):
 
 def calculate_match_percentage(rule_conditions, facts):
     '''
-    This function calculates how many of a rule’s required symptoms match the current facts. 
-    It loops through each required symptom, increments a counter if that symptom is satisfied in facts, 
-    and then computes the ratio by dividing the matched count by the total number of required symptoms. 
-    If there are no required symptoms, it returns zero for the ratio. Finally, it returns the ratio, the matched count, and the total required count.
+    Purpose: Calculates the proportion of symptoms that match a rule's conditions.
+    Logic:
+    Counts the total required symptoms and the number of matched symptoms.
+    Computes the match ratio as matched_count / required_count.
     '''
     required_count = len(rule_conditions)
     matched_count = 0
@@ -62,9 +64,10 @@ def calculate_match_percentage(rule_conditions, facts):
 
 def check_disorders_with_threshold(kb, threshold=0.6):
     '''
-    This function checks each rule in the knowledge base to see if its required symptoms meet or exceed a specified match ratio. 
-    For every rule, it calculates how many required symptoms are currently satisfied, then compares that ratio to the threshold. 
-    If it’s high enough, the rule’s diagnosis is recorded in the potential dictionary along with its ratio, matched symptom count, and total required.
+    Purpose: Identifies disorders whose match ratio exceeds the given threshold.
+    Logic:
+    Loops through all rules, calculates match ratios using calculate_match_percentage.
+    If a disorder meets the threshold, stores it in a dictionary with match details.
     '''
     potential = {}
     facts = kb["facts"]
@@ -78,9 +81,11 @@ def check_disorders_with_threshold(kb, threshold=0.6):
 
 def gather_missing_symptoms_for_disorders(kb, disorders, asked_symptoms):
     '''
-    This function asks the user about any required symptoms that remain unknown for the given disorders. 
-    It skips questions already asked (using asked_symptoms), updates the user’s yes/no responses in facts, and counts how many times the user denies required symptoms. 
-    If the user says “no” to more than half of a disorder’s required symptoms, that disorder is removed from consideration.
+    Purpose: Queries the user about missing symptoms for given disorders.
+    Logic:
+    Finds symptoms not yet confirmed (False in facts).
+    Asks the user about these symptoms and updates the facts based on their response.
+    If the user denies more than half of a disorder's required symptoms, removes it from consideration.
     '''
     facts = kb["facts"]
     to_remove = set()
@@ -116,8 +121,10 @@ def gather_missing_symptoms_for_disorders(kb, disorders, asked_symptoms):
 
 def summarize_unasked_symptoms(kb, diagnosis):
     '''
-    This function looks up the rule for the specified diagnosis, then collects any symptoms required by that rule but still marked False in the knowledge base. 
-    It returns a list of those “unasked” or unconfirmed symptoms so the system knows which questions remain.
+    Purpose: Identifies symptoms for a specific diagnosis that remain unasked.
+    Logic:
+    Finds the rule corresponding to the diagnosis.
+    Collects symptoms that are required (True) but still False in facts
     '''
     facts = kb["facts"]
     unasked = []
@@ -131,9 +138,10 @@ def summarize_unasked_symptoms(kb, diagnosis):
 
 def finalize_diagnosis(kb, diagnosis, ratio, matched_count, required_count):
     '''
-    This function announces the final diagnosis by printing a summary of which required symptoms were met and showing any remaining symptoms that were never asked about. 
-    It then displays the match ratio, indicating how many symptoms were satisfied out of the total required, 
-    and concludes with a disclaimer that it’s not a formal medical diagnosis.
+    Purpose: Outputs the final diagnosis summary.
+    Logic:
+    Lists unasked symptoms, match percentage, and disclaimer.
+    Provides a summary of the diagnostic process.
     '''
     not_asked = summarize_unasked_symptoms(kb, diagnosis)
     if not_asked:
@@ -146,7 +154,7 @@ def finalize_diagnosis(kb, diagnosis, ratio, matched_count, required_count):
     print(f"\nConclusion: It's most likely '{diagnosis}' based on current data.")
     print(f"You matched {matched_count} out of {required_count} required symptoms "
           f"({ratio*100:.0f}%).")
-    print("Note: This is not a formal diagnosis. Please consult a professional.")
+    print("Note: This is not a formal diagnosis. Please consult a professional :)")
 
 ###############################################################################
 # 2. Main Expert System Flow
@@ -155,11 +163,27 @@ def finalize_diagnosis(kb, diagnosis, ratio, matched_count, required_count):
 def run_expert_system(kb):
 
     '''
-    This function run_expert_system starts by asking the user about their current feelings, extracts any matching symptoms using extract_keywords, 
-    and focuses on disorders whose rules directly reference those symptoms. If none match, it broadens to consider all disorders. After asking relevant questions, 
-    it checks which disorders meet at least 60% of their required symptoms, and either narrows them down further or finalizes a diagnosis. 
-    If exactly one disorder remains above the threshold, the user can finalize it or explore more questions. 
-    If multiple remain, the user can attempt to differentiate them or stop early, and if none remain above 60%, the system concludes that more data may be needed.
+    User Input and Initial Fact Matching
+    Prompts the user to describe how they feel.
+    Extracts symptoms from the input using extract_keywords.
+    Marks matched symptoms as True in the facts dictionary.
+    b) Identify Relevant Disorders
+    Finds disorders explicitly referencing the matched symptoms using find_relevant_disorders.
+    If no specific disorders match, switches to a broader check of all disorders.
+    c) Ask Missing Questions
+    Uses gather_missing_symptoms_for_disorders to query the user about required symptoms for relevant or all disorders.
+    d) Evaluate Disorders with Threshold
+    Evaluates disorders based on the match ratio using check_disorders_with_threshold.
+    Disorders with a match ratio ≥ 60% are considered potential diagnoses.
+    e) Finalize or Narrow Down Diagnoses
+    If one disorder meets the threshold:
+    Asks the user whether to finalize the diagnosis or query more symptoms.
+    If multiple disorders remain:
+    Offers the user an option to further narrow them down.
+    If no disorders meet the threshold, informs the user that more data may be needed.
+    f) End of System
+    Finalizes the diagnosis if only one disorder remains and the user chooses to confirm it.
+    Otherwise, lists the potential disorders and their match details.
     '''
     facts = kb["facts"]
 
