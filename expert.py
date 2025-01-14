@@ -1,6 +1,6 @@
 import spacy
 from knowledge_base import knowledge_base
-
+from do_action import do_action
 # tokenize user input and extract keywords.
 nlp = spacy.load("en_core_web_sm")
 
@@ -154,7 +154,119 @@ def finalize_diagnosis(kb, diagnosis, ratio, matched_count, required_count):
     print(f"\nConclusion: It's most likely '{diagnosis}' based on current data.")
     print(f"You matched {matched_count} out of {required_count} required symptoms "
           f"({ratio*100:.0f}%).")
-    print("Note: This is not a formal diagnosis. Please consult a professional :)")
+
+    follow_up_answer = input(f"\nWould you like to see additional questions about {diagnosis}? (yes/no) ")
+    if follow_up_answer.lower() in ["yes", "y"]:
+        post_diagnosis_followup_from_kb(kb, diagnosis)
+    else:
+        print("No worries. You can always run the system again if you need more info.")
+        print("\nNote: This is not a formal diagnosis. Please consult a professional :)")
+
+
+
+def post_diagnosis_followup_from_kb(kb, diagnosis):
+    """
+    Looks up the follow-up data for the given diagnosis from the knowledge base.
+    1. Asks the user the specified questions (storing answers in a dict).
+    2. Evaluates the mini-rules (in "logic") to see which actions to trigger.
+    3. Calls do_action(...) for each matching rule.
+
+    :param kb: The overall knowledge base (dict).
+    :param diagnosis: The diagnosis name (string).
+    """
+    # Convert to lowercase to match the key in kb["follow_up"], if needed
+    follow_up_data = kb.get("follow_up", {}).get(diagnosis.lower(), {})
+    if not follow_up_data:
+        # No follow-up info for this diagnosis
+        return
+
+    # --------------------------------------------------------------------
+    # 1) Ask the follow-up questions, parse user input, store in `answers`
+    # --------------------------------------------------------------------
+    answers = {}
+    questions = follow_up_data.get("questions", [])
+
+    for q in questions:
+        user_input = input(f"\n{q['text']} ")
+
+        # Parse the answer based on "type" (int, bool, or default/string)
+        if q["type"] == "int":
+            try:
+                answers[q["id"]] = int(user_input)
+            except ValueError:
+                # If input is invalid, default to 0 or handle differently
+                answers[q["id"]] = 0  
+
+        elif q["type"] == "bool":
+            # Convert "yes"/"y"/"true" => True, everything else => False
+            answers[q["id"]] = user_input.strip().lower() in ["yes", "y", "true"]
+
+        else:
+            # For anything else, store the raw string
+            answers[q["id"]] = user_input.strip()
+
+    # ---------------------------------------------
+    # 2) Evaluate each mini-rule in the "logic" list
+    # ---------------------------------------------
+    logic_rules = follow_up_data.get("logic", [])
+    
+    for rule in logic_rules:
+        condition_dict = rule["if"]  # e.g. {"duration": "<2", "taking_meds": False}
+        all_conditions_met = True
+
+        for answer_key, condition_value in condition_dict.items():
+            user_val = answers.get(answer_key, None)
+
+            # A) Check for numeric comparisons (e.g. "<2", ">=6")
+            if (
+                isinstance(condition_value, str) 
+                and (condition_value.startswith("<") or
+                     condition_value.startswith(">") or
+                     condition_value.startswith("<=") or
+                     condition_value.startswith(">="))
+                and isinstance(user_val, int)
+            ):
+                # Identify the comparator
+                comparator = condition_value[0]
+                comp_val_str = condition_value[1:]
+                if condition_value.startswith(">=") or condition_value.startswith("<="):
+                    comparator = condition_value[:2]  # <= or >=
+                    comp_val_str = condition_value[2:]
+
+                # Convert comparison value to an integer
+                try:
+                    comp_val = int(comp_val_str)
+                except ValueError:
+                    comp_val = 0  # fallback or handle differently
+
+                # Perform the comparison
+                if comparator == "<" and not (user_val < comp_val):
+                    all_conditions_met = False
+                elif comparator == ">" and not (user_val > comp_val):
+                    all_conditions_met = False
+                elif comparator == "<=" and not (user_val <= comp_val):
+                    all_conditions_met = False
+                elif comparator == ">=" and not (user_val >= comp_val):
+                    all_conditions_met = False
+
+            # B) Check for boolean conditions (True/False)
+            elif isinstance(condition_value, bool):
+                # user_val must also be a bool, and must match exactly
+                if not isinstance(user_val, bool) or (user_val != condition_value):
+                    all_conditions_met = False
+
+            else:
+                # If none of the above conditions matched,
+                # we consider the rule not met.
+                all_conditions_met = False
+
+            if not all_conditions_met:
+                break  # No need to check further conditions in this rule
+
+        # If all conditions are met, fire the rule's action
+        if all_conditions_met:
+            action_key = rule["then"]
+            do_action(action_key, answers)
 
 ###############################################################################
 # 2. Main Expert System Flow
@@ -189,6 +301,13 @@ def run_expert_system(kb):
 
     print("Hello! Please describe how you feel.")
     user_input = input("> ")
+
+    # NEW CHECK: If user mentions 'suicide' or 'suicidal'
+    if any(word in user_input.lower() for word in ["suicide", "suicidal"]):
+        print("\nIf you're having suicidal thoughts, please reach out to a crisis helpline immediately.\n"
+              "In the UK, dial 111 or visit https://111.nhs.uk/guided-entry/mental-health-help to find one in your region.")
+        print("\n(Ending the system here for safety.)")
+        return  # Stop the expert system
 
     # Extract initial facts
     matched = extract_keywords(user_input, list(facts.keys()))
