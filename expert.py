@@ -171,8 +171,6 @@ def post_diagnosis_followup_from_kb(kb, diagnosis):
     2. Evaluates the mini-rules (in "logic") to see which actions to trigger.
     3. Calls do_action(...) for each matching rule.
 
-    :param kb: The overall knowledge base (dict).
-    :param diagnosis: The diagnosis name (string).
     """
     # Convert to lowercase to match the key in kb["follow_up"], if needed
     follow_up_data = kb.get("follow_up", {}).get(diagnosis.lower(), {})
@@ -273,30 +271,6 @@ def post_diagnosis_followup_from_kb(kb, diagnosis):
 ###############################################################################
 
 def run_expert_system(kb):
-
-    '''
-    User Input and Initial Fact Matching
-    Prompts the user to describe how they feel.
-    Extracts symptoms from the input using extract_keywords.
-    Marks matched symptoms as True in the facts dictionary.
-    b) Identify Relevant Disorders
-    Finds disorders explicitly referencing the matched symptoms using find_relevant_disorders.
-    If no specific disorders match, switches to a broader check of all disorders.
-    c) Ask Missing Questions
-    Uses gather_missing_symptoms_for_disorders to query the user about required symptoms for relevant or all disorders.
-    d) Evaluate Disorders with Threshold
-    Evaluates disorders based on the match ratio using check_disorders_with_threshold.
-    Disorders with a match ratio ≥ 60% are considered potential diagnoses.
-    e) Finalize or Narrow Down Diagnoses
-    If one disorder meets the threshold:
-    Asks the user whether to finalize the diagnosis or query more symptoms.
-    If multiple disorders remain:
-    Offers the user an option to further narrow them down.
-    If no disorders meet the threshold, informs the user that more data may be needed.
-    f) End of System
-    Finalizes the diagnosis if only one disorder remains and the user chooses to confirm it.
-    Otherwise, lists the potential disorders and their match details.
-    '''
     facts = kb["facts"]
 
     print("Hello! Please describe how you feel.")
